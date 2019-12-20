@@ -401,7 +401,7 @@ class CSP:
         """
         print msg, 'randomly setting the initial voltage for each variable population'
         for variable in self.var_pops:
-            variable.initialize("v", RandomDistribution("uniform", v_range))
+            variable.initialize(v=RandomDistribution("uniform", v_range))
 
     def recording(self):
         """Record spikes from neural populations representing CSP variables.
