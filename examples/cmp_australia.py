@@ -23,7 +23,7 @@ territories are labeled as follows:
 
 The coloring uses 3 colors red -> 0, green->1, blue->2
 """
-import spynnaker7.pyNN as p                                           # simulator
+import pynn_genn as p                                           # simulator
 import argparse
 try:
     from spinnaker_csp import CSP, plot_entropy
@@ -55,6 +55,7 @@ bordering_states = [{'source':1, 'target':2},
                      {'source':5, 'target':6}]
 
 # SpiNNaker setup.
+"""
 run_time = 30000
 p.setup(timestep=1.0)
 # Build spiking neural network.
@@ -77,6 +78,7 @@ map.save('australia')
 map.report_network_params('report_cmp_australia')
 # End simulation.
 p.end()
+"""
 # Plot entropy.
 sol=plot_entropy('australia', 200, preprint=False)
 formatted = []
