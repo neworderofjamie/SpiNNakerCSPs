@@ -79,7 +79,7 @@ def plot_entropy(spikes_file=None, resolution=200, save_to=False, show=True, dra
     """
     spikes, params = load_data(spikes_file)
     run_time, variables_number, size, domain_size, core_size, constraints, stim_times, diss_times = params
-    time_bins = run_time/resolution
+    time_bins = (run_time/resolution) + 1
     probabilities, spikecount, pT = compute_probabilities(spikes, variables_number, domain_size, core_size, time_bins,
                                                           resolution, cumulative, cumulative_decay)
     H, max_H, p_max = compute_entropy(probabilities, variables_number, domain_size, time_bins)
