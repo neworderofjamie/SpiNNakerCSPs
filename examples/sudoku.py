@@ -9,7 +9,7 @@ Spiking Neural Network Solver for Sudoku puzzles.
 
 Some example puzzles are available to be imported from the puzzles folder.
 """
-import spynnaker7.pyNN as p                                           # simulator
+import pynn_genn as p                                           # simulator
 import argparse
 
 try:

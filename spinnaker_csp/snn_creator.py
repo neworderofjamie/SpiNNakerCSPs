@@ -11,7 +11,7 @@ a network of leaky integrate and fire spiking neurons whose connectivity represe
 are either inhibitory or excitatory. The neurons are stochastically stimulated by spike sources implementing a Poisson
 process causing the network dynamics to implement a stochastic search of the satisying configuration.
 """
-import spynnaker7.pyNN as p  # simulator
+import pynn_genn as p  # simulator
 from pyNN.random import RandomDistribution
 import numpy as np
 import os
@@ -272,12 +272,12 @@ class CSP:
             if self.clues_inhibition:
                 synapses = p.Projection(self.var_pops[variable], self.var_pops[variable], p.FromListConnector(
                     connections, safe=True),
-                                        target="inhibitory")
+                                        receptor_type="inhibitory")
                 self.internal_conns.append(synapses)
             elif variable not in self.clues:
                 synapses = p.Projection(self.var_pops[variable], self.var_pops[variable], p.FromListConnector(
                     connections, safe=True),
-                                        target="inhibitory")
+                                        receptor_type="inhibitory")
                 self.internal_conns.append(synapses)
 
 
@@ -289,7 +289,6 @@ class CSP:
             d_range: range for the random distribution of synaptic delays in the form [d_min, d_max].
             w_clues: clues specific range for the random distribution of synaptic weights in the form [w_min, w_max].
         """
-        p.set_number_of_neurons_per_core(p.IF_curr_exp, 150)
         print msg, 'connecting Poisson noise sources to neural populations for stimulation'
         delays = RandomDistribution('uniform', d_range)
         weights = RandomDistribution('uniform', w_range)
@@ -302,12 +301,12 @@ class CSP:
                     connections = [(m, n + shift, weight_clues.next(), delays.next()) for m in range(self.core_size) for
                                    n in range(self.clue_size)]
                     synapses = p.Projection(self.clues_stim[counter], self.var_pops[variable],
-                                            p.FromListConnector(connections, safe=True), target='excitatory')
+                                            p.FromListConnector(connections, safe=True), receptor_type='excitatory')
                     counter += 1
                     self.stim_conns.append(synapses)
                 else:
                     synapses = p.Projection(self.stim_pops[stimulus][variable], self.var_pops[variable],
-                                            p.OneToOneConnector(weights=weights, delays=delays), target='excitatory')
+                                            p.OneToOneConnector(), p.StaticSynapse(weight=weights, delay=delays), receptor_type='excitatory')
                     self.stim_conns.append(synapses)
         self.stim_times += self.stims
 
@@ -325,7 +324,7 @@ class CSP:
             for variable in range(self.variables_number):
                 if variable not in self.clues[0]:
                     synapses = p.Projection(self.diss_pops[depressor][variable], self.var_pops[variable],
-                                            p.OneToOneConnector(weights=weights, delays=delays), target='inhibitory')
+                                            p.OneToOneConnector(weights=weights, delays=delays), receptor_type='inhibitory')
                     self.diss_conns.append(synapses)
         self.diss_times += self.disss
 
@@ -369,11 +368,11 @@ class CSP:
                         connections.append(
                             (m, n, weight if m // self.core_size == n // self.core_size else 0.0, delays.next()))
                 synapses = p.Projection(self.var_pops[source], self.var_pops[target],
-                                        p.FromListConnector(connections, safe=True), target=kind)
+                                        p.FromListConnector(connections, safe=True), receptor_type=kind)
                 self.constraint_conns.append(synapses)
                 if self.directed == False:
                     synapses = p.Projection(self.var_pops[target], self.var_pops[source],
-                                            p.FromListConnector(connections, safe=True), target=kind)
+                                            p.FromListConnector(connections, safe=True), receptor_type=kind)
                     self.constraint_conns.append(synapses)
             elif target not in self.clues[0]:
                 connections = []
@@ -386,11 +385,11 @@ class CSP:
                         connections.append(
                             (m, n, weight if m // self.core_size == n // self.core_size else 0.0, delays.next()))
                 synapses = p.Projection(self.var_pops[source], self.var_pops[target],
-                                        p.FromListConnector(connections, safe=True), target=kind)
+                                        p.FromListConnector(connections, safe=True), receptor_type=kind)
                 self.constraint_conns.append(synapses)
                 if self.directed == False:
                     synapses = p.Projection(self.var_pops[target], self.var_pops[source],
-                                            p.FromListConnector(connections, safe=True), target=kind)
+                                            p.FromListConnector(connections, safe=True), receptor_type=kind)
                     self.constraint_conns.append(synapses)
 
 
